@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+
+#kg div {
+  width: 400px;
+  display: grid;
+}
+
+</style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+    <script type="text/javascript">
+      
+      function search(query){
+
+          var service_url = 'https://kgsearch.googleapis.com/v1/entities:search';
+          var params = {
+            'query': query,
+            'limit': 1,
+            'indent': true,
+            'key' : 'AIzaSyAd-p--MKMUiVHE_6AkMzLy8cfe0qvTsFQ',
+          };
+          $.getJSON(service_url + '?callback=?', params, function(response) {
+            
+            document.getElementById("kg").innerHTML = "";//empty last search
+
+            $.each(response.itemListElement, function(i, element) {
+              var div = document.createElement('div');
+              var result = element.result;
+
+              if(result.name){
+                var d = document.createElement("span");
+                d.innerHTML = "<b>Name: </b>" +result.name;
+                div.appendChild(d);
+              }
+
+              if(result.image){
+                var image = document.createElement('img');
+                image.setAttribute("src", result.image.contentUrl);
+                div.appendChild(image)
+              }
+
+              if(result.description){
+                var d = document.createElement("span");
+                d.innerHTML = "<b>Description: </b>" + result.description;
+                div.appendChild(d);
+              }
+
+              if(result.detailedDescription){
+                if(result.detailedDescription.url){
+                  var d = document.createElement("a");
+                  d.innerHTML = result.detailedDescription.url;
+                  div.appendChild(d);
+                } 
+                if(result.detailedDescription.articleBody){
+                  var d = document.createElement("p");
+                  d.innerHTML = result.detailedDescription.articleBody;
+                  div.appendChild(d);
+                } 
+              }
+
+              document.getElementById("kg").appendChild(div)
+            });
+          });
+      }
+
+      function callSearch(){
+        var query = document.getElementById('searchField').value;
+        search(query);
+      }
+
+    </script>
+
+  <script>
+
+    window.addEventListener('message', handleMessage, false);
+    
+    function handleMessage(event) {  
+      console.log(event)
+      search(event.data);
+    }
+
+  </script>
+
+</head>
+<body>
+
+<div id="kg">
+  SAP Knowledge Panel
+  please select something to see.
+</div>
+
+</body>
+</html>
