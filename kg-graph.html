@@ -13,18 +13,24 @@
 </style>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-
-
     <script type="text/javascript">
       
+      var urlParams = new URLSearchParams(window.location.search);
+      var API_KEY = urlParams.get("API_KEY");
+
       function search(query){
+
+        if(!API_KEY || API_KEY.length === 0){
+          document.getElementById("kg").innerHTML = "Please provide the API_KEY in the URL";
+          return;
+        }
 
           var service_url = 'https://kgsearch.googleapis.com/v1/entities:search';
           var params = {
             'query': query,
             'limit': 1,
             'indent': true,
-            'key' : 'AIzaSyAd-p--MKMUiVHE_6AkMzLy8cfe0qvTsFQ',
+            'key' : API_KEY,
           };
           $.getJSON(service_url + '?callback=?', params, function(response) {
             
@@ -94,6 +100,8 @@
 <div id="kg">
   SAP Knowledge Panel
   please select something to see.
+  <input type="text" name="test" id="searchField"/>
+  <input type="button" name="submit" value="ok" onclick="callSearch()" />
 </div>
 
 </body>
